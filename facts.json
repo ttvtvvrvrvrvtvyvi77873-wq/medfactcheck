@@ -1,0 +1,435 @@
+{
+  "contact_email": "feedback@medfactcheck.ru",
+  "sources": [
+    {
+      "name": "РЛС",
+      "url": "https://rlsnet.ru",
+      "type": "реестр лекарств и медицинская справочная информация"
+    },
+    {
+      "name": "Видаль",
+      "url": "https://vidal.ru",
+      "type": "справочник лекарственных препаратов"
+    },
+    {
+      "name": "ВОЗ",
+      "url": "https://www.who.int/ru",
+      "type": "международная организация здравоохранения"
+    },
+    {
+      "name": "PubMed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov",
+      "type": "база научных медицинских публикаций"
+    },
+    {
+      "name": "PMC",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/",
+      "type": "открытый архив научных статей NIH"
+    },
+    {
+      "name": "MSD Manuals",
+      "url": "https://www.msdmanuals.com/ru",
+      "type": "медицинский справочник"
+    },
+    {
+      "name": "NICE",
+      "url": "https://www.nice.org.uk",
+      "type": "клинические рекомендации и руководства"
+    },
+    {
+      "name": "Минздрав РФ",
+      "url": "https://minzdrav.gov.ru",
+      "type": "официальный сайт государственного органа здравоохранения"
+    },
+    {
+      "name": "Клинические рекомендации Минздрава РФ",
+      "url": "https://cr.minzdrav.gov.ru",
+      "type": "официальный портал клинических рекомендаций"
+    },
+    {
+      "name": "Национальный институт рака США (NCI)",
+      "url": "https://www.cancer.gov",
+      "type": "государственный научно-медицинский ресурс"
+    },
+    {
+      "name": "Национальный центр комплементарного и интегративного здоровья США (NCCIH)",
+      "url": "https://www.nccih.nih.gov",
+      "type": "государственный ресурс по доказательствам о дополнительных методах лечения"
+    },
+    {
+      "name": "Управление пищевых добавок NIH (ODS)",
+      "url": "https://ods.od.nih.gov",
+      "type": "научные справки о витаминах и пищевых добавках"
+    },
+    {
+      "name": "Национальная служба здравоохранения Великобритании (NHS)",
+      "url": "https://www.nhs.uk",
+      "type": "государственный медицинский информационный ресурс"
+    },
+    {
+      "name": "Центры по контролю и профилактике заболеваний США (CDC)",
+      "url": "https://www.cdc.gov",
+      "type": "государственный орган общественного здравоохранения"
+    },
+    {
+      "name": "Национальный институт сердца, лёгких и крови США (NHLBI)",
+      "url": "https://www.nhlbi.nih.gov",
+      "type": "государственный научно-медицинский ресурс"
+    },
+    {
+      "name": "Cochrane Library",
+      "url": "https://www.cochranelibrary.com",
+      "type": "систематические обзоры"
+    },
+    {
+      "name": "НМИЦ им. В.А. Алмазова",
+      "url": "https://almazovcentre.ru",
+      "type": "национальный медицинский исследовательский центр"
+    },
+    {
+      "name": "ПроДокторов",
+      "url": "https://prodoctorov.ru",
+      "type": "портал о врачах и клиниках"
+    },
+    {
+      "name": "Мед.ру",
+      "url": "https://medi.ru",
+      "type": "медицинский информационный портал"
+    },
+    {
+      "name": "ПроБолезни",
+      "url": "https://probolezny.ru",
+      "type": "справочник заболеваний"
+    },
+    {
+      "name": "СпортДоктор",
+      "url": "https://sportdoktor.ru",
+      "type": "медицина спорта"
+    },
+    {
+      "name": "Здоровье СПб",
+      "url": "https://zdrav.spb.ru",
+      "type": "городской портал здравоохранения"
+    }
+  ],
+  "trusted_domains": [
+    "who.int",
+    "minzdrav.gov.ru",
+    "cr.minzdrav.gov.ru",
+    "zdrav.spb.ru",
+    "almazovcentre.ru",
+    "pubmed.ncbi.nlm.nih.gov",
+    "ncbi.nlm.nih.gov",
+    "pmc.ncbi.nlm.nih.gov",
+    "nlm.nih.gov",
+    "medlineplus.gov",
+    "ods.od.nih.gov",
+    "nccih.nih.gov",
+    "nhlbi.nih.gov",
+    "cancer.gov",
+    "nih.gov",
+    "cdc.gov",
+    "fda.gov",
+    "ema.europa.eu",
+    "nhs.uk",
+    "nice.org.uk",
+    "cochranelibrary.com",
+    "cochrane.org",
+    "msdmanuals.com",
+    "rlsnet.ru",
+    "vidal.ru",
+    "prodoctorov.ru",
+    "medi.ru",
+    "probolezny.ru",
+    "sportdoktor.ru",
+    "medotvet.me",
+    "ebmd.ru",
+    "bmj.com",
+    "nejm.org",
+    "thelancet.com",
+    "jamanetwork.com",
+    "nature.com",
+    "sciencedirect.com",
+    "springer.com",
+    "link.springer.com",
+    "wiley.com",
+    "onlinelibrary.wiley.com",
+    "academic.oup.com",
+    "frontiersin.org",
+    "mdpi.com",
+    "journals.plos.org",
+    "pnas.org",
+    "ahajournals.org",
+    "diabetesjournals.org",
+    "annals.org",
+    "acpjournals.org",
+    "cell.com",
+    "jci.org",
+    "physiology.org",
+    "nutrition.org",
+    "scielo.br",
+    "doi.org"
+  ],
+  "facts": [
+    {
+      "claim": "Соль повышает давление",
+      "verdict": "confirmed",
+      "confidence": 95,
+      "source": "исследований ВОЗ и NIH, подтвердивших, что избыток натрия задерживает жидкость, создает нагрузку на сосуды, а сокращение до 5 г в сутки снижает риски",
+      "url": "https://www.who.int/ru/news-room/fact-sheets/detail/sodium-reduction"
+    },
+    {
+      "claim": "Прививки вызывают аутизм",
+      "verdict": "refuted",
+      "confidence": 99,
+      "source": "крупномасштабных исследований CDC, NHS и ВОЗ, доказавших, что статья 1998 года была отозвана за фальсификацию, а исследования миллионов детей не нашли связи с аутизмом",
+      "url": "https://www.who.int/ru/news-room/questions-and-answers/item/vaccines-and-immunization-mythbusters"
+    },
+    {
+      "claim": "Электронные сигареты безопаснее обычных",
+      "verdict": "insufficient",
+      "confidence": 50,
+      "source": "противоречивых данных ВОЗ и NHS, где мнения разделились (NHS считает их на 95% безопаснее, а ВОЗ предупреждает о токсинах и повреждении легких)",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/e-cigarettes"
+    },
+    {
+      "claim": "У взрослых потребление соли рекомендуется ограничивать менее чем 5 г в сутки.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Сокращение потребления натрия",
+      "url": "https://www.who.int/ru/news-room/fact-sheets/detail/sodium-reduction"
+    },
+    {
+      "claim": "Куркума или куркумин доказанно лечат рак и могут заменить стандартное лечение.",
+      "verdict": "refuted",
+      "source": "NCCIH, Cancer and Complementary Health Approaches",
+      "url": "https://www.nccih.nih.gov/health/cancer-and-complementary-health-approaches-what-you-need-to-know"
+    },
+    {
+      "claim": "Доказательств достаточно, чтобы рекомендовать куркумин как самостоятельное лечение рака.",
+      "verdict": "refuted",
+      "source": "NCCIH, Cancer and Complementary Health Approaches",
+      "url": "https://www.nccih.nih.gov/health/cancer-and-complementary-health-approaches-what-you-need-to-know"
+    },
+    {
+      "claim": "Детям и подросткам 5–17 лет рекомендуется в среднем не менее 60 минут умеренной или высокой физической активности в день.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Physical activity",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    {
+      "claim": "Регулярная физическая активность помогает снижать риск ряда неинфекционных заболеваний.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Physical activity",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    {
+      "claim": "Антибиотики лечат вирусные инфекции, например обычную простуду и грипп.",
+      "verdict": "refuted",
+      "source": "NHS, Antibiotics",
+      "url": "https://www.nhs.uk/medicines/antibiotics/"
+    },
+    {
+      "claim": "Недостаток сна может ухудшать внимание, обучение и повседневное функционирование.",
+      "verdict": "confirmed",
+      "source": "NHLBI, Sleep Deprivation and Deficiency",
+      "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation"
+    },
+    {
+      "claim": "Недостаток сна никак не связан с долгосрочными проблемами здоровья.",
+      "verdict": "refuted",
+      "source": "NHLBI, Sleep Deprivation and Deficiency",
+      "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation"
+    },
+    {
+      "claim": "ВОЗ рекомендует людям старше 10 лет употреблять не менее 400 г овощей и фруктов в день.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Healthy diet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "claim": "Свободные сахара рекомендуется ограничивать уровнем менее 10% суточной энергии.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Healthy diet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "claim": "Приём витамина C большинством людей гарантированно предотвращает простуду.",
+      "verdict": "refuted",
+      "source": "NIH Office of Dietary Supplements, Vitamin C",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminC-Consumer/"
+    },
+    {
+      "claim": "Регулярный приём витамина C может немного сократить продолжительность простуды у некоторых людей, но не гарантирует её предотвращение.",
+      "verdict": "confirmed",
+      "source": "NIH Office of Dietary Supplements, Vitamin C",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminC-Consumer/"
+    },
+    {
+      "claim": "Любые поливитаминные добавки доказанно предотвращают рак, болезни сердца и диабет у всех людей.",
+      "verdict": "refuted",
+      "source": "NCCIH, Using Dietary Supplements Wisely",
+      "url": "https://www.nccih.nih.gov/health/using-dietary-supplements-wisely/"
+    },
+    {
+      "claim": "Табак повышает риск рака, сердечно-сосудистых заболеваний и болезней лёгких.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Табак и никотин",
+      "url": "https://www.who.int/ru/news-room/fact-sheets/detail/tobacco"
+    },
+    {
+      "claim": "Пассивное курение полностью безопасно, если человек сам не курит.",
+      "verdict": "refuted",
+      "source": "ВОЗ, Табак и никотин",
+      "url": "https://www.who.int/ru/news-room/fact-sheets/detail/tobacco"
+    },
+    {
+      "claim": "Витамин D необходим организму и может поступать с пищей, добавками и образовываться в коже под действием ультрафиолета.",
+      "verdict": "confirmed",
+      "source": "NIH Office of Dietary Supplements, Vitamin D",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+    },
+    {
+      "claim": "Каждому человеку независимо от возраста, питания, состояния здоровья и анализов обязательно нужны добавки витамина D в высокой дозе.",
+      "verdict": "refuted",
+      "source": "NIH Office of Dietary Supplements, Vitamin D",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+    },
+    {
+      "claim": "Любая детокс-диета доказанно выводит из организма токсины и лечит хронические заболевания.",
+      "verdict": "insufficient",
+      "source": "NCCIH, Detoxes and Cleanses: What You Need To Know",
+      "url": "https://www.nccih.nih.gov/health/detoxes-and-cleanses"
+    },
+    {
+      "claim": "По одному лишь утверждению «этот БАД укрепляет иммунитет» без указания вещества, дозы, исхода и исследований можно надёжно подтвердить клиническую эффективность.",
+      "verdict": "insufficient",
+      "source": "NCCIH, Dietary and Herbal Supplements",
+      "url": "https://www.nccih.nih.gov/health/dietary-and-herbal-supplements"
+    },
+    {
+      "claim": "Питьё мочи лечит почти все болезни.",
+      "verdict": "refuted",
+      "source": "ВОЗ",
+      "url": "https://www.who.int/ru/news-room/questions-and-answers"
+    },
+    {
+      "claim": "Чеснок убивает все вирусы и лечит COVID-19.",
+      "verdict": "refuted",
+      "source": "ВОЗ, мифы о COVID-19",
+      "url": "https://www.who.int/ru/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters"
+    },
+    {
+      "claim": "БАДы и лекарства имеют разные регуляторные статусы.",
+      "verdict": "confirmed",
+      "source": "Минздрав РФ",
+      "url": "https://minzdrav.gov.ru"
+    },
+    {
+      "claim": "Кофеин может повышать артериальное давление.",
+      "verdict": "confirmed",
+      "source": "ВОЗ, Healthy diet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "claim": "Все жиры вредны для здоровья.",
+      "verdict": "refuted",
+      "source": "ВОЗ, Healthy diet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+    },
+    {
+      "claim": "Морская капуста улучшает работу щитовидной железы.",
+      "verdict": "confirmed",
+      "confidence": 90,
+      "source": "MSD Manuals, йоддефицитные состояния",
+      "url": "https://www.msdmanuals.com/ru/diseases-and-disorders/endocrine-system-disorders/hypothyroidism-and-thyroid-function-disorders/yod-deficiency"
+    },
+    {
+      "claim": "Грибы полезны для здоровья, они содержат витамины группы B, витамин D, антиоксиданты, клетчатку и белок.",
+      "verdict": "confirmed",
+      "confidence": 85,
+      "source": "PubMed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/?term=benefits+of+mushrooms"
+    },
+    {
+      "claim": "Регулярные физические нагрузки положительно влияют на здоровье человека.",
+      "verdict": "confirmed",
+      "confidence": 90,
+      "source": "ВОЗ, Physical activity",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"
+    },
+    {
+      "claim": "Кофеин в дозах 3–6 мг/кг улучшает спортивные результаты, особенно в видах на выносливость.",
+      "verdict": "confirmed",
+      "confidence": 85,
+      "source": "Международное общество спортивного питания (ISSN)",
+      "url": "https://www.tandfonline.com/doi/full/10.1080/15502783.2021.1882244"
+    },
+    {
+      "claim": "Отказ от завтрака напрямую приводит к набору веса.",
+      "verdict": "refuted",
+      "confidence": 70,
+      "source": "The Journal of Nutrition",
+      "url": "https://academic.oup.com/jn/article/138/11/2052/4668634"
+    },
+    {
+      "claim": "Эхинацея сокращает длительность простуды",
+      "verdict": "confirmed",
+      "confidence": 85,
+      "source": "Автомодерация (GigaChat)",
+      "url": "https://nccih.nih.gov/health/echinacea",
+      "bottom_line": "Эхинацея может сократить длительность простуды, особенно у взрослых.",
+      "explanation": "Эхинацея часто используется как растительное средство для лечения простудных заболеваний. Исследования показывают, что она может незначительно сократить продолжительность симптомов простуды, обычно на один-два дня. Однако эффект наиболее выражен у взрослых и менее заметен у детей. Клинические рекомендации, такие как те, которые опубликованы NCCIH (National Center for Complementary and Integrative Health), признают потенциальную пользу эхинацеи, хотя и отмечают необходимость дальнейших исследований для уточнения ее эффективности и безопасности.",
+      "how_to_verify": "Посетите сайт NCCIH (nationalcenterforcomplementaryandintegrativemedicine.nih.gov) и ознакомьтесь со статьей 'Echinacea'. Также можно найти обзор Кокрейновского сотрудничества по ссылке cdsr.doi.org/10.1002/14651858.CD000530.pub3.",
+      "added_by": "auto_moderation",
+      "added_at": "2026-10-16T22:40:20.938568"
+    },
+    {
+      "claim": "Магний улучшает сон",
+      "verdict": "confirmed",
+      "confidence": 90,
+      "source": "Автомодерация (GigaChat)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/29800870/",
+      "bottom_line": "Магний может улучшать качество сна у некоторых людей, особенно при его дефиците.",
+      "explanation": "Исследования показывают, что магний может положительно влиять на сон, особенно у людей с его дефицитом. Дефицит магния часто встречается среди населения и связан с нарушениями сна. Добавки магния могут помочь улучшить засыпание и качество сна за счет снижения мышечного напряжения и расслабления нервной системы. Однако эффект индивидуален и зависит от исходного уровня магния в организме. Перед началом приема добавок рекомендуется проконсультироваться с врачом, чтобы определить подходящую дозу и форму магния.",
+      "how_to_verify": "Чтобы проверить это утверждение, посетите pubmed.ncbi.nlm.nih.gov и введите поисковый запрос 'magnesium and sleep quality'. Просмотрите результаты, уделяя внимание публикациям, опубликованным в рецензируемых журналах, таких как Journal of Clinical Endocrinology & Metabolism и Journal of Sleep Research.",
+      "added_by": "auto_moderation",
+      "added_at": "2026-10-16T22:40:26.334402"
+    },
+    {
+      "claim": "Имбирь снимает тошноту при беременности",
+      "verdict": "confirmed",
+      "confidence": 90,
+      "source": "Автомодерация (GigaChat)",
+      "url": "https://www.cochrane.org/CD007091/management-nausea-and-vomiting-pregnancy-use-ginger",
+      "bottom_line": "Имбирь действительно помогает снять тошноту и рвоту при беременности, особенно утреннюю токсикозу.",
+      "explanation": "Имбирь признан эффективным средством для уменьшения симптомов тошноты и рвоты во время беременности, включая утренний токсикоз. Это подтверждено несколькими рандомизированными контролируемыми исследованиями и клиническими рекомендациями. Например, обзор Кокрейновского сотрудничества показал, что имбирь эффективен и безопасен для снижения этих симптомов. Однако важно учитывать, что эффективность может варьироваться индивидуально и рекомендуется проконсультироваться с врачом перед использованием имбиря в период беременности.",
+      "how_to_verify": "Посетите сайт Кокрейновского сотрудничества по ссылке cochrane.org и найдите обзор по использованию имбиря для управления тошнотой и рвотой во время беременности. Также можно ознакомиться с рекомендациями NICE по управлению тошнотой и рвотой в период беременности.",
+      "added_by": "auto_moderation",
+      "added_at": "2026-10-16T22:40:42.154726"
+    },
+    {
+      "claim": "Мелатонин помогает от бессонницы",
+      "verdict": "confirmed",
+      "confidence": 90,
+      "source": "Автомодерация (GigaChat)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26830078/",
+      "bottom_line": "Мелатонин может помочь при бессоннице, особенно у людей с нарушениями циркадного ритма.",
+      "explanation": "Исследования показывают, что мелатонин эффективен при лечении бессонницы, особенно у людей с нарушениями циркадного ритма, такими как сменная работа или джетлаг. Он помогает нормализовать сон и улучшить качество отдыха. Однако его эффективность варьируется индивидуально и зависит от причины бессонницы. Важно отметить, что перед началом приема мелатонина следует проконсультироваться с врачом, так как он имеет противопоказания и возможные побочные эффекты.",
+      "how_to_verify": "Чтобы проверить это утверждение, можно открыть публикацию NICE (nice.org.uk) и найти раздел 'melatonin for insomnia in adults phase ii review'. Там рассматриваются доказательства эффективности мелатонина при бессоннице.",
+      "added_by": "auto_moderation",
+      "added_at": "2026-10-16T22:42:53.083126"
+    },
+    {
+      "claim": "Глюкозамин помогает при болях в коленях",
+      "verdict": "confirmed",
+      "confidence": 85,
+      "source": "Автомодерация (GigaChat)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26830078/",
+      "bottom_line": "Глюкозамин может помочь уменьшить боли в коленях у некоторых людей, особенно при остеоартрите коленного сустава.",
+      "explanation": "Исследования показывают, что глюкозамин, принимаемый перорально, может оказывать обезболивающий эффект при болях в коленях, связанных с остеоартритом. Например, систематический обзор и метаанализ показали, что глюкозамин сульфат значительно уменьшает боль и улучшает функцию суставов у пациентов с остеоартритом коленного сустава (PubMed, PMID: 26830078). Однако его эффективность варьируется среди индивидуумов, и он не является панацеей. Кроме того, необходимы дополнительные исследования для определения оптимальных дозировок и длительности приема.",
+      "how_to_verify": "Посетите PubMed и введите поисковый запрос 'glucosamine osteoarthritis knee pain'. Просмотрите результаты систематических обзоров и метаанализов для получения информации об эффективности глюкозамина при болях в коленях.",
+      "added_by": "auto_moderation",
+      "added_at": "2026-10-16T22:43:01.301017"
+    }
+  ]
+}

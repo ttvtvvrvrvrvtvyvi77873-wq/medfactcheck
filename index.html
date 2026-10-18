@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>МедФактЧек — Проверка медицинской информации</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.7/build/pdfmake.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.2.7/build/vfs_fonts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --success: #198754;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #ffffff;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .navbar { box-shadow: 0 2px 12px rgba(0,0,0,0.05); background: #fff !important; }
+
+    .status-badge {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 50px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-weight: 500;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      padding: 5rem 0 4rem;
+    }
+    .hero-title { font-weight: 700; font-size: 2.4rem; color: #0f172a; }
+
+    .demo-btn { border-radius: 50px; font-size: 0.9rem; transition: all 0.2s; }
+    .demo-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,110,253,0.2); }
+
+    .workflow-step { text-align: center; padding: 1.5rem; }
+    .workflow-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #e0f2fe;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.6rem; color: var(--primary);
+    }
+
+    .input-card { border: none; border-radius: 16px; box-shadow: var(--card-shadow); overflow: hidden; }
+
+    .nav-tabs .nav-link { border: none; color: #64748b; font-weight: 500; padding: 1rem 1.5rem; }
+    .nav-tabs .nav-link.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: transparent; }
+
+    #charCount { font-size: 0.85rem; color: #64748b; }
+    #charCount.warn { color: var(--warning); font-weight: 600; }
+
+    .drop-zone {
+      border: 2px dashed #cbd5e1; border-radius: 12px;
+      padding: 3rem 2rem; text-align: center;
+      transition: all 0.2s; background: #f8fafc; cursor: pointer;
+    }
+    .drop-zone.dragover { border-color: var(--primary); background: #e0f2fe; }
+    .preview-img { max-height: 220px; border-radius: 12px; object-fit: contain; }
+
+    .btn-check-main { padding: 0.9rem 2.5rem; font-size: 1.1rem; border-radius: 50px; font-weight: 600; }
+
+    .progress-stage { font-size: 0.9rem; color: #64748b; }
+    .result-card { border: none; border-radius: 16px; box-shadow: var(--card-shadow); }
+
+    .verdict-badge {
+      font-size: 1.4rem; font-weight: 700; padding: 1rem 1.5rem;
+      border-radius: 12px; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .verdict-confirmed { background: #d1fae5; color: #065f46; }
+    .verdict-insufficient { background: #fef3c7; color: #92400e; }
+    .verdict-refuted { background: #fee2e2; color: #991b1b; }
+
+    .confidence-bar { height: 12px; border-radius: 6px; background: #e2e8f0; overflow: hidden; }
+    .confidence-fill { height: 100%; border-radius: 6px; transition: width 0.8s ease; }
+
+    .source-item { padding: 0.6rem 0; border-bottom: 1px solid #f1f5f9; }
+    .source-item:last-child { border-bottom: none; }
+    .source-item a { word-break: break-all; }
+
+    .author-badge {
+      font-size: 0.95rem; padding: 0.5rem 1rem; border-radius: 8px;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+
+    .section-title { font-weight: 700; font-size: 1.8rem; margin-bottom: 1.5rem; color: #0f172a; }
+
+    .source-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+    .source-pill {
+      background: #f1f5f9; border-radius: 10px; padding: 0.8rem;
+      text-align: center; font-weight: 500; font-size: 0.9rem; color: #334155;
+      transition: all 0.2s;
+    }
+    .source-pill:hover { background: #e0f2fe; color: var(--primary); }
+
+    .step-card, .security-card {
+      border: none; border-radius: 14px; box-shadow: var(--card-shadow); height: 100%;
+    }
+    .step-card { transition: transform 0.2s; }
+    .step-card:hover { transform: translateY(-4px); }
+
+    .game-card {
+      border: none; border-radius: 16px; box-shadow: var(--card-shadow);
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    }
+
+    .thinking-card {
+      border: none; border-radius: 14px; box-shadow: var(--card-shadow);
+      height: 100%; background: #ffffff;
+    }
+
+    .how-to-verify {
+      background: #ecfdf5;
+      border-left: 4px solid #10b981;
+      padding: 1rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    .recognized-text {
+      background: #eff6ff;
+      border-left: 4px solid #0d6efd;
+      padding: 1rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .recognized-text.poor {
+      background: #fff7ed;
+      border-left-color: #f97316;
+    }
+
+    .footer { background: #0f172a; color: #94a3b8; padding: 3rem 0 2rem; }
+    .footer a { color: #cbd5e1; text-decoration: none; }
+    .footer a:hover { color: #fff; }
+
+    .disclaimer {
+      background: #fff7ed; border-left: 4px solid #f97316;
+      padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 0.95rem;
+    }
+
+    .btn:focus-visible, .nav-link:focus-visible, .form-control:focus-visible,
+    .drop-zone:focus-visible, .source-pill:focus-visible {
+      outline: 3px solid #93c5fd; outline-offset: 2px;
+    }
+
+    #qrcode { display: inline-block; padding: 1rem; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    #qrcode img, #qrcode canvas { display: block; }
+
+    .counter-card {
+      border: none; border-radius: 20px;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      box-shadow: var(--card-shadow);
+    }
+    .counter-number {
+      font-size: 4.5rem; font-weight: 700; color: var(--primary); line-height: 1;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 1.8rem; }
+      .status-badge { font-size: 0.75rem; }
+      .counter-number { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top" aria-label="Главная навигация">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-4" href="#" aria-label="МедФактЧек — на главную">
+      МедФактЧек
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Открыть меню">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="#how-it-works">Как это работает</a></li>
+        <li class="nav-item"><a class="nav-link" href="#knowledge">База знаний</a></li>
+        <li class="nav-item"><a class="nav-link" href="#thinking">Критическое мышление</a></li>
+        <li class="nav-item"><a class="nav-link" href="#security">Безопасность</a></li>
+        <li class="nav-item"><a class="nav-link" href="#sources">Наши источники</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">О проекте</a></li>
+      </ul>
+      <span class="status-badge" id="statusBadge" aria-live="polite" role="status">
+        Проверка системы...
+      </span>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" style="margin-top: 56px;">
+  <div class="container text-center">
+    <h1 class="hero-title mb-3">Проверьте информацию о здоровье за 10 секунд</h1>
+    <p class="lead text-secondary mb-4 mx-auto" style="max-width: 680px;">
+      Вставьте текст или загрузите скриншот — мы проверим, подтверждается ли это авторитетными источниками. Без воды. Без паники. Только факты.
+    </p>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+      <button class="btn btn-outline-primary demo-btn" onclick="fillDemo('Куркума лечит рак')" aria-label="Пример: куркума лечит рак">Куркума лечит рак</button>
+      <button class="btn btn-outline-primary demo-btn" onclick="fillDemo('Витамин C укрепляет иммунитет')" aria-label="Пример: витамин C укрепляет иммунитет">Витамин C укрепляет иммунитет</button>
+      <button class="btn btn-outline-primary demo-btn" onclick="fillDemo('Соль повышает давление')" aria-label="Пример: соль повышает давление">Соль повышает давление</button>
+    </div>
+
+    <div class="row g-3 justify-content-center align-items-center">
+      <div class="col-md-3 workflow-step">
+        <div class="workflow-icon" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></div>
+        <div class="fw-semibold">Вы отправляете<br>текст / фото</div>
+      </div>
+      <div class="col-md-1 d-none d-md-block text-center text-primary fs-3" aria-hidden="true">&rarr;</div>
+      <div class="col-md-3 workflow-step">
+        <div class="workflow-icon" aria-hidden="true"><i class="bi bi-robot"></i></div>
+        <div class="fw-semibold">ИИ ищет<br>проверяемые утверждения</div>
+      </div>
+      <div class="col-md-1 d-none d-md-block text-center text-primary fs-3" aria-hidden="true">&rarr;</div>
+      <div class="col-md-3 workflow-step">
+        <div class="workflow-icon" aria-hidden="true"><i class="bi bi-search"></i></div>
+        <div class="fw-semibold">Сверка с 15+<br>авторитетными источниками</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="check">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card input-card">
+          <div class="card-body p-0">
+            <ul class="nav nav-tabs px-3 pt-3" id="inputTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="text-tab" data-bs-toggle="tab" data-bs-target="#textPane" type="button" role="tab" aria-controls="textPane" aria-selected="true">Текст</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="photo-tab" data-bs-toggle="tab" data-bs-target="#photoPane" type="button" role="tab" aria-controls="photoPane" aria-selected="false">Фото</button>
+              </li>
+            </ul>
+
+            <div class="tab-content p-4">
+              <div class="tab-pane fade show active" id="textPane" role="tabpanel" aria-labelledby="text-tab">
+                <label for="textInput" class="visually-hidden">Текст для проверки</label>
+                <textarea class="form-control form-control-lg" id="textInput" rows="6" maxlength="5000"
+                          placeholder="Вставьте сюда текст из поста или видео..."
+                          aria-label="Текст для проверки"></textarea>
+
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                  <small id="charCount" aria-live="polite">0 / 5000</small>
+                  <small id="longTextWarn" class="text-warning d-none" role="alert">Текст будет обрезан до 5000 символов</small>
+                </div>
+
+                <div class="text-center mt-4">
+                  <button class="btn btn-primary btn-check-main" id="checkTextBtn" disabled
+                          onclick="startCheck('text')" aria-label="Проверить текст">
+                    Проверить
+                  </button>
+                  <p class="small text-muted mt-3 mb-0">
+                    Нажимая «Проверить», вы соглашаетесь с
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">политикой конфиденциальности</a>
+                    и обработкой данных (152-ФЗ).
+                  </p>
+                  <p class="small text-muted mb-0">
+                    Канал для запросов на удаление данных появится позже.
+                  </p>
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="photoPane" role="tabpanel" aria-labelledby="photo-tab">
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+                     role="button" tabindex="0" aria-label="Загрузить изображение">
+                  <i class="bi bi-cloud-arrow-up fs-1 text-primary mb-2" aria-hidden="true"></i>
+                  <p class="mb-1 fw-medium">Перетащите фото сюда или нажмите для выбора</p>
+                  <p class="small text-muted mb-0">PNG, JPG, WEBP — до 10 МБ</p>
+                  <input type="file" id="fileInput" accept="image/*" class="d-none" aria-label="Выбор файла">
+                </div>
+
+                <div id="previewWrap" class="text-center mt-3 d-none">
+                  <img id="previewImg" class="preview-img mb-2" alt="Превью загруженного изображения">
+                  <br>
+                  <button class="btn btn-sm btn-outline-danger" onclick="removePhoto()">Удалить фото</button>
+                </div>
+
+                <div class="text-center mt-4">
+                  <button class="btn btn-primary btn-check-main" id="checkPhotoBtn" disabled
+                          onclick="startCheck('photo')" aria-label="Проверить фото">
+                    Проверить
+                  </button>
+                  <p class="small text-muted mt-3 mb-0">
+                    Нажимая «Проверить», вы соглашаетесь с
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">политикой конфиденциальности</a>
+                    и обработкой данных (152-ФЗ).
+                  </p>
+                  <p class="small text-muted mb-0">
+                    Канал для запросов на удаление данных появится позже.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-4 d-none" id="loadingBlock">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center">
+          <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Загрузка...</span>
+          </div>
+          <h5 class="mb-3" id="loadingTitle">Анализируем... Это может занять 10–15 секунд</h5>
+          <div class="progress mb-3" style="height: 10px;" aria-hidden="true">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar"
+                 role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <p class="progress-stage mb-0" id="progressStage" aria-live="polite">Извлечение текста...</p>
+          <p class="text-muted small mt-2 d-none" id="queueMsg" role="alert">Вы в очереди. Ожидайте.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 d-none" id="resultBlock">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card result-card">
+          <div class="card-body p-4 p-md-5">
+            <h2 class="h4 mb-4">Результат проверки</h2>
+
+            <div class="mb-4">
+              <div class="verdict-badge verdict-insufficient" id="verdictBadge" role="status" aria-live="polite">Обработка...</div>
+              <span id="fromCacheBadge" class="badge bg-secondary ms-2 d-none">из кэша</span>
+              <span id="fromFactsBadge" class="badge bg-info ms-2 d-none">из базы знаний</span>
+            </div>
+
+            <div class="mb-4 d-none" id="recognizedTextBlock">
+              <h3 class="h6 text-uppercase text-muted mb-3">
+                <i class="bi bi-card-text" aria-hidden="true"></i> Распознанный текст
+              </h3>
+              <div class="recognized-text" id="recognizedTextContent"></div>
+              <p class="small text-muted mt-2 mb-0" id="ocrQualityHint"></p>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="fw-medium">Уверенность модели</span>
+                <span id="confidenceValue" aria-live="polite">—</span>
+              </div>
+              <div class="confidence-bar" role="progressbar" aria-label="Уверенность модели" aria-valuemin="0" aria-valuemax="100">
+                <div class="confidence-fill bg-warning" id="confidenceFill" style="width: 0%"></div>
+              </div>
+              <p class="small text-muted mt-2 mb-0" id="confidenceHint"></p>
+            </div>
+
+            <div class="mb-4 p-3 bg-light rounded-3">
+              <h3 class="h6 text-uppercase text-muted mb-2">Краткий вывод</h3>
+              <p class="mb-0 fs-5 fw-medium" id="bottomLine">—</p>
+            </div>
+
+            <div class="mb-4">
+              <button class="btn btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                      type="button" data-bs-toggle="collapse" data-bs-target="#scienceCollapse"
+                      aria-expanded="false" aria-controls="scienceCollapse">
+                <span>Подробное объяснение (The Science)</span>
+                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="collapse mt-3" id="scienceCollapse">
+                <div class="p-3 border rounded-3 bg-white">
+                  <p id="scienceText" class="mb-0">—</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4" id="howToVerifyBlock" style="display:none;">
+              <h3 class="h6 text-uppercase text-muted mb-3">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i> Как проверить это самому
+              </h3>
+              <div class="how-to-verify">
+                <p class="mb-0" id="howToVerifyText">—</p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h3 class="h6 text-uppercase text-muted mb-3">Источники</h3>
+              <div id="sourcesList" aria-live="polite"></div>
+            </div>
+
+            <div class="mb-4">
+              <div class="author-badge bg-warning-subtle text-warning-emphasis" id="authorBadge">
+                Автор: квалификация не подтверждена (в разработке)
+              </div>
+              <p class="small text-muted mt-2 mb-0">
+                Мы не обвиняем автора. Мы лишь указываем, подтверждена ли его квалификация в открытых источниках.
+              </p>
+            </div>
+
+            <div class="disclaimer mb-4" role="note">
+              <strong>Это не медицинская рекомендация.</strong>
+              При проблемах со здоровьем обратитесь к врачу.
+              Сервис анализирует информацию, но не заменяет консультацию специалиста.
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-outline-primary" onclick="shareResult()" aria-label="Поделиться результатом">
+                <i class="bi bi-share" aria-hidden="true"></i> Поделиться
+              </button>
+              <button class="btn btn-primary" onclick="downloadPDF()" aria-label="Скачать PDF-отчёт">
+                Скачать PDF-отчёт
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="how-it-works">
+  <div class="container">
+    <h2 class="section-title text-center">Как мы проверяем информацию</h2>
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card step-card p-4 text-center">
+          <div class="workflow-icon mx-auto" aria-hidden="true"><i class="bi bi-upload"></i></div>
+          <h3 class="h5">1. Вы отправляете</h3>
+          <p class="text-secondary mb-0">Текст или фото из поста, статьи или видео.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card step-card p-4 text-center">
+          <div class="workflow-icon mx-auto" aria-hidden="true"><i class="bi bi-cpu"></i></div>
+          <h3 class="h5">2. Система ищет</h3>
+          <p class="text-secondary mb-0">Выделяет утверждения и сверяет с авторитетными источниками.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card step-card p-4 text-center">
+          <div class="workflow-icon mx-auto" aria-hidden="true"><i class="bi bi-check2-circle"></i></div>
+          <h3 class="h5">3. Вы получаете</h3>
+          <p class="text-secondary mb-0">Вердикт с объяснением и ссылками на источники.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 mx-auto" style="max-width: 700px;">
+      <h3 class="h5 mb-3">Как отличить фейк от правды?</h3>
+      <ul class="list-unstyled mb-0">
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2" aria-hidden="true"></i> Ссылается ли автор на конкретные исследования?</li>
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2" aria-hidden="true"></i> Есть ли точные цифры или только общие слова?</li>
+        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2" aria-hidden="true"></i> Обещает ли автор мгновенное исцеление?</li>
+        <li><i class="bi bi-check-circle-fill text-success me-2" aria-hidden="true"></i> Указана ли квалификация автора?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light" id="knowledge">
+  <div class="container">
+    <h2 class="section-title text-center">База знаний растёт</h2>
+    <p class="text-center text-secondary mx-auto mb-5" style="max-width: 700px;">
+      Каждый проверенный запрос проходит многоуровневую модерацию и пополняет базу фактов.
+    </p>
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card counter-card p-5 text-center">
+          <div class="counter-number mb-2" id="factsTotal">—</div>
+          <p class="text-secondary mb-0">проверенных фактов в базе</p>
+          <p class="small text-muted mt-3 mb-0">
+            Содержимое базы не публикуется — на сайте отображается только счётчик.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="thinking">
+  <div class="container">
+    <h2 class="section-title text-center">Развитие критического мышления</h2>
+    <p class="text-center text-secondary mx-auto mb-5" style="max-width: 760px;">
+      Как самостоятельно отличить факт от фейка. Простые приёмы, которые работают не только в медицине.
+    </p>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">1</div>
+          <h3 class="h5">Проверьте автора</h3>
+          <p class="text-secondary mb-0">Есть ли у автора медицинское образование? Указана ли клиника или организация? Если нет — к советам стоит относиться осторожно.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">2</div>
+          <h3 class="h5">Ищите первоисточник</h3>
+          <p class="text-secondary mb-0">Если автор ссылается на «исследования» — найдите их. Реальные исследования публикуются в научных журналах, а не в постах.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">3</div>
+          <h3 class="h5">Насторожитесь от крайностей</h3>
+          <p class="text-secondary mb-0">«Полностью излечивает», «за 3 дня», «без побочных эффектов» — это тревожные сигналы. Настоящая медицина осторожна.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">4</div>
+          <h3 class="h5">Проверьте дату</h3>
+          <p class="text-secondary mb-0">Устаревшая информация может быть опасна. Убедитесь, что факт не опровергнут новыми исследованиями.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">5</div>
+          <h3 class="h5">Сверьте с официальными источниками</h3>
+          <p class="text-secondary mb-0">ВОЗ, Минздрав РФ, РЛС, Видаль, PubMed — надёжнее, чем блог или TikTok. Потратьте 2 минуты на проверку.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card thinking-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true">6</div>
+          <h3 class="h5">Обратитесь к врачу</h3>
+          <p class="text-secondary mb-0">Даже проверенная информация может не подходить именно вам. Диагноз ставит врач, а не интернет.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light" id="sources">
+  <div class="container">
+    <h2 class="section-title text-center">Мы опираемся только на проверенные источники</h2>
+    <div class="source-grid mb-4">
+      <div class="source-pill" tabindex="0">РЛС</div>
+      <div class="source-pill" tabindex="0">Видаль</div>
+      <div class="source-pill" tabindex="0">ВОЗ</div>
+      <div class="source-pill" tabindex="0">MSD Manuals</div>
+      <div class="source-pill" tabindex="0">PubMed</div>
+      <div class="source-pill" tabindex="0">NICE</div>
+      <div class="source-pill" tabindex="0">Минздрав РФ</div>
+      <div class="source-pill" tabindex="0">Клинрек</div>
+      <div class="source-pill" tabindex="0">НМИЦ Алмазова</div>
+      <div class="source-pill" tabindex="0">ПроДокторов</div>
+      <div class="source-pill" tabindex="0">Мед.ру</div>
+      <div class="source-pill" tabindex="0">ПроБолезни</div>
+      <div class="source-pill" tabindex="0">СпортДоктор</div>
+      <div class="source-pill" tabindex="0">ЕБМД</div>
+    </div>
+    <p class="text-center text-secondary mx-auto" style="max-width: 760px;">
+      База знаний растёт автоматически: новые проверенные факты добавляются в неё после модерации командой.
+    </p>
+  </div>
+</section>
+
+<section class="py-5" id="security">
+  <div class="container">
+    <h2 class="section-title text-center">Ваши данные под защитой</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true"><i class="bi bi-lock"></i></div>
+          <h3 class="h6">Мы не храним ваш текст в базе</h3>
+          <p class="small text-muted mb-0 mt-2">Текст проверки не сохраняется после ответа. В кэше хранится только обезличенный ответ.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true"><i class="bi bi-shield-check"></i></div>
+          <h3 class="h6">Передача данных — по защищённому каналу</h3>
+          <p class="small text-muted mb-0 mt-2">Связь с GigaChat идёт по HTTPS. Публичный доступ — через HTTPS-туннель.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true"><i class="bi bi-file-earmark-text"></i></div>
+          <h3 class="h6">Соблюдаем 152-ФЗ</h3>
+          <p class="small text-muted mb-0 mt-2">Мы не запрашиваем ФИО, телефон, email. В логи попадают только первые 20 символов запроса.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true"><i class="bi bi-person-x"></i></div>
+          <h3 class="h6">Никакой биометрии</h3>
+          <p class="small text-muted mb-0 mt-2">Мы не используем распознавание лиц и не собираем данные о вас как о человеке.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4">
+          <div class="fs-3 mb-2" aria-hidden="true"><i class="bi bi-activity"></i></div>
+          <h3 class="h6">Только проверка фактов</h3>
+          <p class="small text-muted mb-0 mt-2">Мы не даём медицинских рекомендаций, не ставим диагнозы, не назначаем лечение.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card security-card p-4 d-flex align-items-center justify-content-center">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="btn btn-outline-primary">Полная политика конфиденциальности</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title fs-5" id="privacyModalLabel">Политика конфиденциальности</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Что мы собираем:</strong> только текст утверждения. Ничего больше — ни имени, ни телефона, ни email.</p>
+        <p><strong>Что мы НЕ собираем:</strong> персональные данные, биометрию, геолокацию, данные об устройстве.</p>
+        <p><strong>Как обрабатываем:</strong> текст отправляется в GigaChat (Сбер) для анализа.</p>
+        <p><strong>Что сохраняем:</strong> обезличенный кэш ответов (24 часа) — только хеш запроса, без текста.</p>
+        <p><strong>База знаний:</strong> содержимое базы не публикуется. На сайте отображается только счётчик записей.</p>
+        <p><strong>Удаление данных:</strong> канал для запросов на удаление данных появится позже. Мы сообщим о нём на этой странице.</p>
+        <p class="mb-0"><strong>152-ФЗ:</strong> соблюдаем закон «О персональных данных» и Приказ Роскомнадзора №140.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Понятно</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="py-5 bg-light" id="game">
+  <div class="container">
+    <h2 class="section-title text-center">Проверь свою грамотность</h2>
+    <p class="text-center text-secondary mb-4 mx-auto" style="max-width: 700px;">
+      Мы собрали 20 популярных утверждений о здоровье. Определите, какие из них правда, а какие — миф.
+    </p>
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="card game-card p-4 p-md-5">
+          <p class="text-center text-secondary mb-3">
+            Счёт: <strong id="gameScore">0</strong> из <strong id="gameTotal">0</strong>
+          </p>
+          <div class="p-3 bg-white rounded-3 mb-4">
+            <p class="fs-5 mb-0" id="gameQuestion" aria-live="polite">Загрузка вопроса...</p>
+          </div>
+          <div class="d-flex gap-3 justify-content-center mb-3">
+            <button class="btn btn-success btn-lg px-4" onclick="answerGame(true)" id="btnTrue">Правда</button>
+            <button class="btn btn-danger btn-lg px-4" onclick="answerGame(false)" id="btnFalse">Ложь</button>
+          </div>
+          <div id="gameFeedback" class="text-center d-none" role="alert">
+            <p class="fw-medium mb-2" id="gameResultText"></p>
+            <button class="btn btn-outline-primary btn-sm" onclick="nextGameQuestion()">Следующий вопрос</button>
+          </div>
+          <div id="gameFinished" class="text-center d-none">
+            <p class="fw-medium mb-2">Игра окончена!</p>
+            <p class="small text-muted" id="gameFinalText"></p>
+            <button class="btn btn-outline-primary btn-sm" onclick="restartGame()">Играть заново</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5" id="about">
+  <div class="container">
+    <h2 class="section-title text-center">О проекте</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <p class="lead">МедФактЧек — это проект команды 1227 в рамках кейс-чемпионата «Инновации в медицине». Мы помогаем людям отличать достоверную медицинскую информацию от фейков.</p>
+              <p><strong>Технологии:</strong> Python, Flask, GigaChat (Сбер), RAG-поиск по базе фактов, OCR для распознавания текста с фото, очередь запросов, кэш ответов.</p>
+              <p><strong>Как работает обучение:</strong> система сохраняет ответы GigaChat в промежуточную базу. Команда проверяет их и переносит корректные факты в основную базу. Содержимое базы публично не выводится — на сайте виден только счётчик.</p>
+              <p class="mb-0"><strong>Команда:</strong> лидер, ИТ-специалист, эксперт по здоровью, аналитики.</p>
+            </div>
+            <div class="col-md-4 text-center mt-4 mt-md-0">
+              <div id="qrcode"></div>
+              <p class="small text-muted mt-2 mb-0">Открой с телефона</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <p class="mb-2">Сервис не заменяет консультацию врача. При проблемах со здоровьем обращайтесь к специалисту.</p>
+        <p class="small mb-0">© 2026 Команда 1227 | Кейс-чемпионат «Инновации в медицине»</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" class="me-3">Политика конфиденциальности</a>
+        <span class="text-muted small">Обратная связь появится позже</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Пустая строка — тот же origin. Работает и локально, и через туннель.
+const BACKEND_URL = '';
+
+const MAX_RETRIES = 3;
+const REQUEST_TIMEOUT_MS = 45000;
+const BASE_DELAY_MS = 1000;
+const CIRCUIT_BREAKER_THRESHOLD = 5;
+const CIRCUIT_BREAKER_COOLDOWN_MS = 30000;
+
+let consecutiveErrors = 0;
+let circuitOpenedAt = 0;
+
+async function fetchWithRetry(url, options, maxRetries = MAX_RETRIES) {
+  if (circuitOpenedAt > 0) {
+    const elapsed = Date.now() - circuitOpenedAt;
+    if (elapsed < CIRCUIT_BREAKER_COOLDOWN_MS) {
+      const wait = Math.ceil((CIRCUIT_BREAKER_COOLDOWN_MS - elapsed) / 1000);
+      throw new Error('Сервис временно недоступен. Повторите через ' + wait + ' сек.');
+    }
+    circuitOpenedAt = 0;
+    consecutiveErrors = 0;
+  }
+
+  let lastError = null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try {
+      const response = await fetch(url, Object.assign({}, options, { signal: controller.signal }));
+      clearTimeout(timeoutId);
+      if (response.status === 429 || response.status === 503) return response;
+      if (response.status >= 500) throw new Error('Сервер вернул ошибку ' + response.status);
+      consecutiveErrors = 0;
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      lastError = error;
+      if (attempt === maxRetries) break;
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  consecutiveErrors++;
+  if (consecutiveErrors >= CIRCUIT_BREAKER_THRESHOLD) circuitOpenedAt = Date.now();
+  throw lastError;
+}
+
+async function sendToBackend(text) {
+  try {
+    const response = await fetchWithRetry(BACKEND_URL + '/api/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
+    });
+    return await response.json();
+  } catch (error) {
+    return {
+      verdict: 'insufficient',
+      confidence: 0,
+      bottom_line: 'Сервис временно недоступен. Попробуйте позже.',
+      explanation: 'Не удалось получить ответ. Проверьте, что бэкенд запущен. Ошибка: ' + error.message,
+      sources: [],
+      how_to_verify: ''
+    };
+  }
+}
+
+async function sendImageToBackend(file) {
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await fetchWithRetry(BACKEND_URL + '/api/check-image', {
+      method: 'POST',
+      body: formData
+    });
+    return await response.json();
+  } catch (error) {
+    return {
+      verdict: 'insufficient',
+      confidence: 0,
+      bottom_line: 'Не удалось обработать изображение.',
+      explanation: 'Проверьте, что бэкенд запущен и Tesseract установлен. Ошибка: ' + error.message,
+      sources: [],
+      how_to_verify: '',
+      recognized_text: '',
+      ocr_quality: 'poor'
+    };
+  }
+}
+
+async function checkQueueStatus() {
+  try {
+    const response = await fetch(BACKEND_URL + '/api/queue/status', { cache: 'no-store' });
+    const data = await response.json();
+    return {
+      position: data.position || 0,
+      waitSeconds: data.waitSeconds || 0,
+      totalProcessed: data.totalProcessed || 0
+    };
+  } catch (e) {
+    return { position: 0, waitSeconds: 0, totalProcessed: 0, offline: true };
+  }
+}
+
+let currentFile = null;
+let gameScore = 0;
+let currentGameIdx = 0;
+let gameQuestions = [];
+let gameAnswered = [];
+
+const textInput = document.getElementById('textInput');
+const checkTextBtn = document.getElementById('checkTextBtn');
+const charCount = document.getElementById('charCount');
+const longTextWarn = document.getElementById('longTextWarn');
+
+textInput.addEventListener('input', function () {
+  const len = textInput.value.length;
+  charCount.textContent = len + ' / 5000';
+  charCount.classList.toggle('warn', len > 4000);
+  longTextWarn.classList.toggle('d-none', len <= 4000);
+  checkTextBtn.disabled = len === 0;
+});
+
+function fillDemo(text) {
+  textInput.value = text;
+  textInput.dispatchEvent(new Event('input'));
+  document.getElementById('text-tab').click();
+  window.scrollTo({ top: document.getElementById('check').offsetTop - 80, behavior: 'smooth' });
+}
+
+const fileInput = document.getElementById('fileInput');
+const dropZone = document.getElementById('dropZone');
+const previewWrap = document.getElementById('previewWrap');
+const previewImg = document.getElementById('previewImg');
+const checkPhotoBtn = document.getElementById('checkPhotoBtn');
+
+fileInput.addEventListener('change', handleFile);
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    handleFile();
+  }
+});
+dropZone.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    fileInput.click();
+  }
+});
+
+function handleFile() {
+  const file = fileInput.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  currentFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewImg.src = e.target.result;
+    previewWrap.classList.remove('d-none');
+    checkPhotoBtn.disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  currentFile = null;
+  fileInput.value = '';
+  previewWrap.classList.add('d-none');
+  checkPhotoBtn.disabled = true;
+}
+
+async function startCheck(type) {
+  document.getElementById('resultBlock').classList.add('d-none');
+  document.getElementById('loadingBlock').classList.remove('d-none');
+  document.getElementById('queueMsg').classList.add('d-none');
+  document.getElementById('queueMsg').textContent = 'Вы в очереди. Ожидайте.';
+
+  const progressBar = document.getElementById('progressBar');
+  const progressStage = document.getElementById('progressStage');
+  progressBar.style.width = '0%';
+  progressBar.setAttribute('aria-valuenow', 0);
+
+  const stages = [
+    'Извлечение текста...',
+    'Выделение утверждений...',
+    'Поиск в источниках...',
+    'Формирование ответа...'
+  ];
+
+  for (let i = 0; i < stages.length; i++) {
+    progressStage.textContent = stages[i];
+    progressBar.style.width = ((i + 1) / stages.length * 100) + '%';
+    progressBar.setAttribute('aria-valuenow', (i + 1) / stages.length * 100);
+    await new Promise(r => setTimeout(r, 600));
+  }
+
+  const queue = await checkQueueStatus();
+  if (queue.position > 0) {
+    const wait = queue.waitSeconds || queue.position * 5;
+    document.getElementById('queueMsg').textContent =
+      'Вы ' + queue.position + '-й в очереди. Примерно ' + wait + ' сек ожидания.';
+    document.getElementById('queueMsg').classList.remove('d-none');
+  }
+
+  let result;
+  if (type === 'text') {
+    result = await sendToBackend(textInput.value);
+  } else {
+    result = await sendImageToBackend(currentFile);
+  }
+
+  showRealResult(result);
+}
+
+function showRealResult(result) {
+  document.getElementById('loadingBlock').classList.add('d-none');
+  document.getElementById('resultBlock').classList.remove('d-none');
+
+  const badge = document.getElementById('verdictBadge');
+  const confFill = document.getElementById('confidenceFill');
+  const conf = result.confidence || 0;
+
+  if (result.verdict === 'confirmed') {
+    badge.className = 'verdict-badge verdict-confirmed';
+    badge.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> Подтверждено';
+    confFill.className = 'confidence-fill bg-success';
+  } else if (result.verdict === 'refuted') {
+    badge.className = 'verdict-badge verdict-refuted';
+    badge.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i> Опровергнуто';
+    confFill.className = 'confidence-fill bg-danger';
+  } else {
+    badge.className = 'verdict-badge verdict-insufficient';
+    badge.innerHTML = '<i class="bi bi-question-circle" aria-hidden="true"></i> Недостаточно данных';
+    confFill.className = 'confidence-fill bg-warning';
+  }
+
+  const fromCache = document.getElementById('fromCacheBadge');
+  const fromFacts = document.getElementById('fromFactsBadge');
+  fromCache.classList.toggle('d-none', !result._from_cache);
+  fromFacts.classList.toggle('d-none', result._from !== 'facts');
+
+  const recBlock = document.getElementById('recognizedTextBlock');
+  const recContent = document.getElementById('recognizedTextContent');
+  const ocrHint = document.getElementById('ocrQualityHint');
+  if (result.recognized_text && result.recognized_text.length > 0) {
+    recContent.textContent = result.recognized_text;
+    const quality = result.ocr_quality || 'good';
+    recContent.classList.toggle('poor', quality === 'poor');
+    if (quality === 'poor') {
+      ocrHint.textContent = result.ocr_quality_reason || 'Возможно, качество фото низкое. Проверьте текст.';
+      ocrHint.className = 'small text-warning mt-2 mb-0';
+    } else {
+      ocrHint.textContent = 'Текст распознан корректно.';
+      ocrHint.className = 'small text-muted mt-2 mb-0';
+    }
+    recBlock.classList.remove('d-none');
+  } else {
+    recBlock.classList.add('d-none');
+  }
+
+  let confLabel = '', confHint = '';
+  if (conf >= 80) {
+    confLabel = '(высокая)';
+    confHint = 'Высокая уверенность: вердикт подкреплён источниками.';
+  } else if (conf >= 50) {
+    confLabel = '(средняя)';
+    confHint = 'Средняя уверенность: есть нюансы, рекомендуем проверить самим.';
+  } else {
+    confLabel = '(низкая)';
+    confHint = 'Низкая уверенность: данных мало. Обязательно обратитесь к врачу.';
+  }
+
+  document.getElementById('confidenceValue').textContent = conf + '% ' + confLabel;
+  document.getElementById('confidenceHint').textContent = confHint;
+  confFill.style.width = conf + '%';
+  confFill.parentElement.setAttribute('aria-valuenow', conf);
+
+  document.getElementById('bottomLine').textContent = result.bottom_line || '—';
+  document.getElementById('scienceText').textContent = result.explanation || '—';
+
+  const howToBlock = document.getElementById('howToVerifyBlock');
+  if (result.how_to_verify && result.how_to_verify.length > 10) {
+    document.getElementById('howToVerifyText').textContent = result.how_to_verify;
+    howToBlock.style.display = 'block';
+  } else {
+    howToBlock.style.display = 'none';
+  }
+
+  const list = document.getElementById('sourcesList');
+  list.innerHTML = '';
+  if (result.sources && Array.isArray(result.sources) && result.sources.length > 0) {
+    result.sources.forEach(function (url) {
+      const div = document.createElement('div');
+      div.className = 'source-item';
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = url;
+      div.appendChild(a);
+      list.appendChild(div);
+    });
+  } else {
+    list.innerHTML = '<p class="text-muted small mb-0">Источники не указаны. Попробуйте переформулировать запрос.</p>';
+  }
+
+  document.getElementById('resultBlock').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateStatus(queue) {
+  const badge = document.getElementById('statusBadge');
+  if (queue.offline) {
+    badge.textContent = 'Бэкенд не запущен';
+    badge.style.background = '#fee2e2';
+    badge.style.color = '#991b1b';
+  } else {
+    badge.textContent = 'Активно | Очередь: ' + queue.position + ' | Обработано: ' + queue.totalProcessed;
+    badge.style.background = '#e8f5e9';
+    badge.style.color = '#2e7d32';
+  }
+}
+
+async function refreshStatus() {
+  const q = await checkQueueStatus();
+  updateStatus(q);
+}
+
+setInterval(refreshStatus, 10000);
+refreshStatus();
+
+document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+  a.addEventListener('click', function (e) {
+    const id = a.getAttribute('href');
+    if (id.length > 1) {
+      e.preventDefault();
+      const el = document.querySelector(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+async function loadGameQuestions() {
+  try {
+    const response = await fetch(BACKEND_URL + '/api/game/questions');
+    const data = await response.json();
+    gameQuestions = data.questions || [];
+    if (gameQuestions.length === 0) {
+      document.getElementById('gameQuestion').textContent = 'Вопросы ещё не загружены.';
+      return;
+    }
+    gameAnswered = new Array(gameQuestions.length).fill(false);
+    document.getElementById('gameTotal').textContent = gameQuestions.length;
+    loadGameQuestion();
+  } catch (e) {
+    document.getElementById('gameQuestion').textContent = 'Не удалось загрузить вопросы. Проверьте бэкенд.';
+  }
+}
+
+function loadGameQuestion() {
+  const q = gameQuestions[currentGameIdx];
+  if (!q) return;
+  document.getElementById('gameQuestion').textContent = '«' + q.text + '»';
+  document.getElementById('gameFeedback').classList.add('d-none');
+  document.getElementById('gameFinished').classList.add('d-none');
+  document.getElementById('btnTrue').disabled = false;
+  document.getElementById('btnFalse').disabled = false;
+}
+
+function answerGame(userSaidTrue) {
+  const q = gameQuestions[currentGameIdx];
+  if (!q || gameAnswered[currentGameIdx]) return;
+  gameAnswered[currentGameIdx] = true;
+  document.getElementById('btnTrue').disabled = true;
+  document.getElementById('btnFalse').disabled = true;
+
+  const correct = userSaidTrue === q.isTrue;
+  if (correct) gameScore++;
+  document.getElementById('gameScore').textContent = gameScore;
+
+  const feedback = document.getElementById('gameFeedback');
+  const resultText = document.getElementById('gameResultText');
+  resultText.innerHTML = correct
+    ? '<span class="text-success">Верно!</span> ' + q.explain
+    : '<span class="text-danger">Неверно.</span> ' + q.explain;
+  feedback.classList.remove('d-none');
+
+  if (gameAnswered.every(v => v)) setTimeout(showGameFinished, 2000);
+}
+
+function nextGameQuestion() {
+  let next = (currentGameIdx + 1) % gameQuestions.length;
+  let found = false;
+  for (let i = 0; i < gameQuestions.length; i++) {
+    if (!gameAnswered[next]) { found = true; break; }
+    next = (next + 1) % gameQuestions.length;
+  }
+  if (!found) { showGameFinished(); return; }
+  currentGameIdx = next;
+  loadGameQuestion();
+}
+
+function showGameFinished() {
+  document.getElementById('gameFeedback').classList.add('d-none');
+  document.getElementById('gameFinished').classList.remove('d-none');
+  document.getElementById('gameFinalText').textContent =
+    'Ваш результат: ' + gameScore + ' из ' + gameQuestions.length + ' правильных ответов.';
+}
+
+function restartGame() {
+  gameScore = 0;
+  currentGameIdx = 0;
+  gameAnswered = new Array(gameQuestions.length).fill(false);
+  document.getElementById('gameScore').textContent = '0';
+  loadGameQuestion();
+}
+
+function shareResult() {
+  const text = document.getElementById('bottomLine').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'МедФактЧек', text: text, url: location.href }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text + '\n\nПроверено на МедФактЧек: ' + location.href);
+    alert('Результат скопирован в буфер обмена');
+  }
+}
+
+function downloadPDF() {
+  const verdict = document.getElementById('verdictBadge').textContent.trim();
+  const confidence = document.getElementById('confidenceValue').textContent;
+  const bottomLine = document.getElementById('bottomLine').textContent;
+  const explanation = document.getElementById('scienceText').textContent;
+  const howToVerify = document.getElementById('howToVerifyText').textContent;
+  const author = document.getElementById('authorBadge').textContent.trim();
+  const recognized = document.getElementById('recognizedTextContent').textContent;
+
+  const sourcesNodes = document.querySelectorAll('#sourcesList .source-item a');
+  const sourcesArray = [];
+  sourcesNodes.forEach(function (a) {
+    sourcesArray.push({ text: a.textContent, link: a.href, color: '#0d6efd', margin: [0, 2, 0, 2] });
+  });
+  if (sourcesArray.length === 0) {
+    sourcesArray.push({ text: 'Источники не указаны', italics: true, color: '#64748b' });
+  }
+
+  const date = new Date().toLocaleString('ru-RU');
+
+  const content = [
+    { text: 'МедФактЧек — Отчёт проверки', fontSize: 18, bold: true, color: '#0d6efd', margin: [0, 0, 0, 4] },
+    { text: 'Дата: ' + date, fontSize: 10, color: '#64748b', margin: [0, 0, 0, 16] },
+  ];
+
+  if (recognized && recognized.length > 0 && recognized !== '—') {
+    content.push(
+      { text: 'РАСПОЗНАННЫЙ ТЕКСТ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+      { text: recognized, fontSize: 10, italics: true, color: '#475569', margin: [0, 0, 0, 8] }
+    );
+  }
+
+  content.push(
+    { text: 'ВЕРДИКТ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: verdict, fontSize: 14, bold: true, margin: [0, 0, 0, 8] },
+    { text: 'УВЕРЕННОСТЬ МОДЕЛИ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: confidence, bold: true, margin: [0, 0, 0, 8] },
+    { text: 'КРАТКИЙ ВЫВОД', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: bottomLine, margin: [0, 0, 0, 8] },
+    { text: 'ПОДРОБНОЕ ОБЪЯСНЕНИЕ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: explanation, margin: [0, 0, 0, 8] },
+    { text: 'КАК ПРОВЕРИТЬ САМОМУ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: howToVerify || 'Инструкция не указана', color: '#065f46', margin: [0, 0, 0, 8] },
+    { text: 'ИСТОЧНИКИ', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { ul: sourcesArray, margin: [0, 0, 0, 8] },
+    { text: 'АВТОР', fontSize: 10, bold: true, color: '#0f172a', margin: [0, 12, 0, 4] },
+    { text: author, margin: [0, 0, 0, 4] },
+    { text: 'Мы не обвиняем автора. Мы лишь указываем, подтверждена ли его квалификация в открытых источниках.', fontSize: 9, color: '#64748b', margin: [0, 0, 0, 8] },
+    { text: 'Это не медицинская рекомендация. При проблемах со здоровьем обратитесь к врачу.', fontSize: 9, color: '#92400e', margin: [0, 16, 0, 8] },
+    { text: '© 2026 Команда 1227 | МедФактЧек | Кейс-чемпионат «Инновации в медицине»', fontSize: 8, color: '#94a3b8', margin: [0, 24, 0, 0] }
+  );
+
+  const docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [40, 40, 40, 40],
+    defaultStyle: { fontSize: 11, lineHeight: 1.4 },
+    content: content,
+  };
+
+  try {
+    pdfMake.createPdf(docDefinition).download('medfactcheck-report.pdf');
+  } catch (e) {
+    console.error('Ошибка создания PDF:', e);
+    alert('Не удалось создать PDF. Попробуйте ещё раз.');
+  }
+}
+
+async function loadFacts() {
+  const el = document.getElementById('factsTotal');
+  if (!el) return;
+  try {
+    const response = await fetch(BACKEND_URL + '/api/facts');
+    const data = await response.json();
+    el.textContent = (data.total || 0).toLocaleString('ru-RU');
+  } catch (e) {
+    el.textContent = '—';
+  }
+}
+
+function initQR() {
+  const el = document.getElementById('qrcode');
+  if (!el || typeof QRCode === 'undefined') return;
+  try {
+    new QRCode(el, {
+      text: window.location.href,
+      width: 140,
+      height: 140,
+      colorDark: '#0f172a',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch (e) {
+    console.error('QR error:', e);
+  }
+}
+
+loadGameQuestions();
+loadFacts();
+initQR();
+</script>
+</body>
+</html>

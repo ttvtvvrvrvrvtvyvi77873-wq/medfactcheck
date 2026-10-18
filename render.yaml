@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: medfactcheck
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    envVars:
+      - key: GIGACHAT_AUTH_KEY
+        sync: false
+      - key: GIGACHAT_CLIENT_ID
+        sync: false
+      - key: DEBUG
+        value: "False"
+      - key: MODERATION_ENABLED
+        value: "True"
+      - key: MODERATION_MIN_CONFIDENCE
+        value: "70"
+      - key: GIGACHAT_CONCURRENCY
+        value: "1"
+      - key: RATE_LIMIT_MAX
+        value: "10"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: CONTACT_EMAIL
+        value: "feedback@medfactcheck.ru"
